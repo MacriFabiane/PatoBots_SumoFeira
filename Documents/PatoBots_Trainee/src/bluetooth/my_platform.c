@@ -43,6 +43,8 @@ static void my_platform_on_device_connected(uni_hid_device_t* d) {
  
 static void my_platform_on_device_disconnected(uni_hid_device_t* d) {
     logi("custom: device disconnected: %p\n", d);
+    uni_bt_allow_incoming_connections(true);
+    uni_bt_start_scanning_and_autoconnect_unsafe();
 }
  
 static uni_error_t my_platform_on_device_ready(uni_hid_device_t* d) {
@@ -50,6 +52,9 @@ static uni_error_t my_platform_on_device_ready(uni_hid_device_t* d) {
     my_platform_instance_t* ins = get_my_platform_instance(d);
     ins->gamepad_seat = GAMEPAD_SEAT_A;
  
+    uni_bt_stop_scanning_unsafe();
+    uni_bt_allow_incoming_connections(false);
+
     trigger_event_on_gamepad(d); //vibra o controle quando conecta
     return UNI_ERROR_SUCCESS;
 }
